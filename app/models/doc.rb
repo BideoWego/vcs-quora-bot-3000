@@ -1,6 +1,8 @@
 class Doc
   include ActiveModel::Model
 
+  APP_NAME = ENV['APP_NAME']
+  APP_VERSION = ENV['APP_VERSION']
   CLIENT_ID = ENV['CLIENT_ID']
   CLIENT_SECRET = ENV['CLIENT_SECRET']
   SCOPE = "https://www.googleapis.com/auth/drive " +
@@ -43,8 +45,8 @@ class Doc
   private
   def initialize_api
     @client = Google::APIClient.new(
-      :application_name => 'VCS QuoraBot3000 v2',
-      :application_version => '0.1.0'
+      :application_name => APP_NAME,
+      :application_version => APP_VERSION
     )
   end
 
