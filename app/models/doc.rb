@@ -42,7 +42,10 @@ class Doc
 
   private
   def initialize_api
-    @client = Google::APIClient.new
+    @client = Google::APIClient.new(
+    	:application_name => "My Project", 
+    	:application_version => "0.0.1"
+    )
   end
 
   def authorize_api
