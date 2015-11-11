@@ -6,9 +6,9 @@ class DocsController < ApplicationController
       :worksheet => 0
     )
     @quora_links = @doc.spreadsheet_range(
-      10..@doc.spreadsheet.num_rows,
+      10..@doc.spreadsheet.num_rows-1,
       3..3
-    )
+    ).reject{ |el| el[0].empty? }
 
     # Uncomment below to see ALL rows and columns
     # @quora_links = @doc.spreadsheet_range(
