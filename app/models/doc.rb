@@ -1,24 +1,3 @@
-# ------------------------------------
-# Not set in stone
-# ------------------------------------
-# 
-# It's good to wrap these functionality in a 
-# model
-# 
-# However the structure of this can
-# and probably should change (method names etc...)
-# Why?
-# 
-# Eventually we should think about how we can "talk"
-# to a Doc as if it were a spreadsheet
-# 
-# For now we must call @doc.spreadsheet
-# 
-# Perhaps even change the name to Spreadsheet to
-# be more specific in can we want to support
-# multiple document types
-# 
-
 class Doc
   include ActiveModel::Model
 
@@ -26,20 +5,18 @@ class Doc
   CLIENT_SECRET = ENV['CLIENT_SECRET']
   SCOPE = "https://www.googleapis.com/auth/drive " +
           "https://spreadsheets.google.com/feeds/"
-  # REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob"
+  REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob"
 
   attr_accessor :spreadsheet,
                 :key,
-                :worksheet,
-                :token,
-                :redirect_uri
-
-  attr_reader :auth_url
+                :worksheet
 
   def initialize(attributes={})
     super
     initialize_api
     authorize_api
+    create_api_session
+    initialize_attributes(attributes)
   end
 
   # Get a spreadsheet given a key and worksheet
@@ -62,11 +39,6 @@ class Doc
     range
   end
 
-  def create_session
-    create_api_session
-    initialize_attributes
-  end
-
 
   private
   def initialize_api
@@ -74,33 +46,33 @@ class Doc
   end
 
   def authorize_api
-    @auth = @client.authorization
-    @auth.client_id = CLIENT_ID
-    @auth.client_secret = CLIENT_SECRET
-    @auth.scope = SCOPE
-    @auth.redirect_uri = @redirect_uri
-    @auth_url = @auth.authorization_uri
-  end
+		client_id = CLIENT_ID
+		client_secret = CLIENT_SECRET
+		token_data = ENV["DRIVE_TOKEN_DATA"]
+		@client = Google::APIClient.new()
+		@auth = @client.authorization
+		@auth.client_id = client_id
+		@auth.client_secret = client_secret
+		@auth.scope = SCOPE
+		@auth.redirect_uri = REDIRECT_URI
 
-  def create_api_session
-    # @session = GoogleDrive.saved_session()
-    @auth.code = @token
-    @auth.fetch_access_token!
-    @session = GoogleDrive.login_with_oauth(@auth.access_token)
-  end
+		@auth.refresh_token = token_data
+		@auth.fetch_access_token!()
+
+	end
+
+	def create_api_session
+	  @session = GoogleDrive.login_with_oauth(@client)
+	end
 
   # Initialize doc with @spreadsheet
   # if attributes given
-  def initialize_attributes
-    if @key && @worksheet
+  def initialize_attributes(attributes)
+    unless attributes.keys.empty?
       @spreadsheet = spreadsheet_by_key_index(
-        @key,
-        @worksheet
+        attributes[:key],
+        attributes[:worksheet]
       )
     end
   end
 end
-
-
-
-
