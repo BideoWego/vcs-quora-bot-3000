@@ -61,21 +61,31 @@ class Doc
   end
 
 
-  private
+private
   def initialize_api
     @client = Google::APIClient.new
   end
 
   def authorize_api
-    @auth = @client.authorization
-    @auth.client_id = CLIENT_ID
-    @auth.client_secret = CLIENT_SECRET
-    @auth.scope = SCOPE
-    @auth.redirect_uri = REDIRECT_URI
+		
+		client_id = CLIENT_ID
+		client_secret = CLIENT_SECRET
+		token_data = ENV["DRIVE_TOKEN_DATA"]
+
+	  @client = Google::APIClient.new()
+	  @auth = @client.authorization
+	  @auth.client_id = client_id
+	  @auth.client_secret = client_secret
+	  @auth.scope = SCOPE
+	  @auth.redirect_uri = REDIRECT_URI
+
+		@auth.refresh_token = token_data
+		@auth.fetch_access_token!()
+
   end
 
   def create_api_session
-    @session = GoogleDrive.saved_session()
+    @session = GoogleDrive.login_with_oauth(@client)
   end
 
   # Initialize doc with @spreadsheet
