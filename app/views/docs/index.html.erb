@@ -1,5 +1,30 @@
-<h2>All Docs:</h2>
-
+<h1>Quora Links</h1>
+<p style="color: red;">
+  NOTE: the variable is @quora_links
+  but this really now a 2D array of all
+  rows and columns in the spreadsheet range
+  given to the Doc model in
+  Doc#spreadsheet_range
+</p>
 <% @quora_links.each do |link| %>
 	<%= link %><br>
 <% end %>
+
+<h1>Doc class inspection</h1>
+<p style="color: blue;">
+  The spreadsheet key and
+  worksheet index are now
+  attributes in the Doc model.
+</p>
+<p style="color: blue;">
+  The spreadsheet attribute is set upon initialization.
+  See
+  <code>
+    app/models/doc.rb  
+  </code>
+</p>
+<pre>
+  @doc.key: <%= @doc.key %>
+  @doc.worksheet: <%= @doc.worksheet %>
+  @doc.spreadheet: <%= @doc.spreadsheet %>
+</pre>
