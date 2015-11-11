@@ -19,3 +19,6 @@
 # Ignore Drive Config Stuff
 /config/drive.yml
 /config/initializers/drive_config.rb
+
+# Ignore links to docs for now
+DOCS.md
