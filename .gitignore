@@ -20,5 +20,8 @@
 /config/drive.yml
 /config/initializers/drive_config.rb
 
-# Mac
+# ------------------------------------
+# Project
+# ------------------------------------
 *.DS_Store
+.irb_history
