@@ -43,7 +43,7 @@ class Doc
   private
   def initialize_api
     @client = Google::APIClient.new(
-      :application_name => 'VCS QuoraBot3000',
+      :application_name => 'VCS QuoraBot3000 v2',
       :application_version => '0.1.0'
     )
   end
@@ -54,6 +54,7 @@ class Doc
 		@auth.client_secret = CLIENT_SECRET
 		@auth.scope = SCOPE
 		@auth.redirect_uri = REDIRECT_URI
+
 		@auth.refresh_token = ENV["DRIVE_TOKEN_DATA"]
 		@auth.fetch_access_token!
 	end

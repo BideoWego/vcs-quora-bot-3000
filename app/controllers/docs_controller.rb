@@ -5,6 +5,7 @@ class DocsController < ApplicationController
       :key => "1hgqLdmi1830DXiwSbT1IcSPVkTp4zn_HxKB7zo-7tzc",
       :worksheet => 0
     )
+    
     @quora_links = @doc.spreadsheet_range(
       10..@doc.spreadsheet.num_rows-1,
       3..3
