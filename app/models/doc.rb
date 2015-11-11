@@ -26,18 +26,20 @@ class Doc
   CLIENT_SECRET = ENV['CLIENT_SECRET']
   SCOPE = "https://www.googleapis.com/auth/drive " +
           "https://spreadsheets.google.com/feeds/"
-  REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob"
+  # REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob"
+  REDIRECT_URI = 'http://example.com:3000'
 
   attr_accessor :spreadsheet,
                 :key,
-                :worksheet
+                :worksheet,
+                :token
+
+  attr_reader :auth_url
 
   def initialize(attributes={})
     super
     initialize_api
     authorize_api
-    create_api_session
-    initialize_attributes(attributes)
   end
 
   # Get a spreadsheet given a key and worksheet
@@ -60,6 +62,11 @@ class Doc
     range
   end
 
+  def create_session
+    create_api_session
+    initialize_attributes
+  end
+
 
   private
   def initialize_api
@@ -72,19 +79,23 @@ class Doc
     @auth.client_secret = CLIENT_SECRET
     @auth.scope = SCOPE
     @auth.redirect_uri = REDIRECT_URI
+    @auth_url = @auth.authorization_uri
   end
 
   def create_api_session
-    @session = GoogleDrive.saved_session()
+    # @session = GoogleDrive.saved_session()
+    @auth.code = @token
+    @auth.fetch_access_token!
+    @session = GoogleDrive.login_with_oauth(@auth.access_token)
   end
 
   # Initialize doc with @spreadsheet
   # if attributes given
-  def initialize_attributes(attributes)
-    unless attributes.keys.empty?
+  def initialize_attributes
+    if @key && @worksheet
       @spreadsheet = spreadsheet_by_key_index(
-        attributes[:key],
-        attributes[:worksheet]
+        @key,
+        @worksheet
       )
     end
   end
