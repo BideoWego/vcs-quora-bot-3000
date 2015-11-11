@@ -1,6 +1,6 @@
 # DOCS
 
-<a href="https://stormy-depths-9571.herokuapp.com/" target="_blank">
+<a href="http://vcs-quora-bot-3000.herokuapp.com" target="_blank">
   Heroku
 </a>
 
