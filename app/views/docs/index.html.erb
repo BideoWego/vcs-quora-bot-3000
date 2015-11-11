@@ -1,5 +1,5 @@
 <h2>All Docs:</h2>
 
 <% @quora_links.each do |link| %>
-	<%= link %><br>
+	<%= "#{link[:link]} #{link[:answer_count]} #{link[:views]} #{link[:followers]}" %><br>
 <% end %>
