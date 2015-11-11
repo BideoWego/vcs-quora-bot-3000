@@ -27,12 +27,12 @@ class Doc
   SCOPE = "https://www.googleapis.com/auth/drive " +
           "https://spreadsheets.google.com/feeds/"
   # REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob"
-  REDIRECT_URI = 'http://example.com:3000'
 
   attr_accessor :spreadsheet,
                 :key,
                 :worksheet,
-                :token
+                :token,
+                :redirect_uri
 
   attr_reader :auth_url
 
@@ -78,7 +78,7 @@ class Doc
     @auth.client_id = CLIENT_ID
     @auth.client_secret = CLIENT_SECRET
     @auth.scope = SCOPE
-    @auth.redirect_uri = REDIRECT_URI
+    @auth.redirect_uri = @redirect_uri
     @auth_url = @auth.authorization_uri
   end
 

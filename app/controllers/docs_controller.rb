@@ -1,11 +1,13 @@
 class DocsController < ApplicationController
 
   def index
+    redirect_uri = request.protocol + request.host_with_port
     if params[:code]
       @doc = Doc.new(
         :key => "1hgqLdmi1830DXiwSbT1IcSPVkTp4zn_HxKB7zo-7tzc",
         :worksheet => 0,
-        :token => params[:code]
+        :token => params[:code],
+        :redirect_uri => redirect_uri
       )
 
       @doc.create_session
@@ -21,7 +23,7 @@ class DocsController < ApplicationController
         1..@doc.spreadsheet.num_cols
       )
     else
-      @doc = Doc.new
+      @doc = Doc.new(:redirect_uri => redirect_uri)
     end
     @code = params[:code]
   end
