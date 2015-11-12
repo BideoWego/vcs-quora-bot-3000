@@ -5,6 +5,35 @@
 class QuoraTask < ScrapeTask
   END_POINT = 'https://www.quora.com/'
 
+  def initialize(page)
+  	@agent = Mechanize.new
+  	@agent.history_added = Proc.new {sleep 1}
+  	@agent.user_agent_alias = 'Mac Safari'
+  	@page = @agent.get(page)
+  end
+
+  def get_answer_count
+  	@page.search('.answer_count').inner_text
+  end
+
+  def get_view_count
+  	@page.search('.QuestionViewsStatsRow').inner_text
+  end
+
+  def get_follower_count
+  	@page.search('.QuestionFollowersStatsRow').inner_text
+  end
+
+  def get_last_asked_date
+  	@page.search('.QuestionLastAskedTime').inner_text
+  end
+
+  def get_upvote_count
+  	binding.pry
+  	@page.search('.AnswerVoterListModal .modal_title').inner_text
+  end
+
+
   # Get Mechanize result
   # agent = Mechanize.new
   # result = agent.get(url)
