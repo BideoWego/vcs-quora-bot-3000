@@ -5,6 +5,10 @@
 class QuoraTask < ScrapeTask
   END_POINT = 'https://www.quora.com/'
 
+  TARGET = '/api/mobile_expanded_voter_list?type=answer&amp;key=oQs9fx3AqQm'
+
+  # Named ranges
+
   # Get Mechanize result
   # agent = Mechanize.new
   # result = agent.get(url)
