@@ -54,7 +54,6 @@ class Doc
 		client_secret = CLIENT_SECRET
 		token_data = ENV["DRIVE_TOKEN_DATA"]
 
-		@client = Google::APIClient.new()
 		@auth = @client.authorization
 		@auth.client_id = client_id
 		@auth.client_secret = client_secret
