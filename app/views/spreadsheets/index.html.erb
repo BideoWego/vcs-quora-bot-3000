@@ -1,0 +1,11 @@
+<h1>Spreadsheet Range</h1>
+<% @spreadsheet_range.each do |item| %>
+  <%= item %><br>
+<% end %>
+
+<h1>Spreadsheet class inspection</h1>
+<pre>
+  @spreadsheet.key: <%= @spreadsheet.key %>
+  @spreadsheet.worksheet: <%= @spreadsheet.worksheet %>
+  @spreadsheet.spreadheet: <%= @spreadsheet.spreadsheet %>
+</pre>
