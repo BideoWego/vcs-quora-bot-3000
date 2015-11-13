@@ -30,7 +30,6 @@ class QuoraTask < ScrapeTask
   end
 
   def get_upvote_count
-  	binding.pry
   	@page.search('.AnswerVoterListModal .modal_title').inner_text
   end
 
