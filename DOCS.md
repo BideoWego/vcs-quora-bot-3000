@@ -40,3 +40,44 @@ key:        1cObJm4eFx1oYjMRzgNsgEymoQa6J0oWBUVW2yIRcpVo
 data_gid:   0 
 map_gid:    872208525
 ```
+
+
+----
+
+# Proposed Ideas/Brainstorming
+
+## General
+
+- Simple table showing differences in stats between dates
+- Scrapes may occur daily, however emails will be weekly
+- Since this is a web app, email summary should provide summary of last week, but also have a link to page showing same or expanded details of that week
+- Top level view with totals (dashboard welcome)
+- Form to easily add/remove tags that are searched for in posts?
+- The state of spreadsheet in Google Drive should always be the most up-to-date
+- We could implement a check to verify a scrape return desired data before overwritting google spreadsheet
+
+## Scraping
+
+- Scrape resource?
+- Scrape action, scrape with (choose spreadsheet dropdown) i.e.(X data worksheet and Y map worksheet) (named range functionality)
+- Show urls that will be scraped before scraping
+- Show scrape progress (AJAX)
+- Show scrape results before saving to Google doc??
+
+----
+
+# Implemented
+
+- Spreadsheets resource
+
+
+
+
+
+
+
+
+
+
+
+

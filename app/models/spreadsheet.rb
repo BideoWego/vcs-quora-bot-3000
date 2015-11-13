@@ -34,10 +34,14 @@ class Spreadsheet < ActiveRecord::Base
     end
   end
 
+  # Getter for data worksheet
+  # (Sheet with analytics)
   def data_worksheet
     @internal_spreadsheet.worksheet_by_gid(data_gid)
   end
 
+  # Getter for map worksheet
+  # (Sheet with named range map)
   def map_worksheet
     @internal_spreadsheet.worksheet_by_gid(map_gid)
   end
