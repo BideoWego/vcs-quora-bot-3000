@@ -5,3 +5,21 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+
+REAL_KEY = '1hgqLdmi1830DXiwSbT1IcSPVkTp4zn_HxKB7zo-7tzc'
+SANDBOX_KEY = '1cObJm4eFx1oYjMRzgNsgEymoQa6J0oWBUVW2yIRcpVo'
+SPREADSHEET_KEY = SANDBOX_KEY
+
+if Rails.env == 'development'
+  puts 'Migrating and reseting database'
+  Rake::Task['db:migrate:reset'].invoke
+else
+end
+
+puts 'Creating Spreadsheets'
+
+Spreadsheet.create(
+  :key => SPREADSHEET_KEY
+)
+
+puts 'done!'

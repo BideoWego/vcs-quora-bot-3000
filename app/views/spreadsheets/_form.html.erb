@@ -1,0 +1,46 @@
+<%= render :partial => 'shared/errors', :locals => {:object => spreadsheet} %>
+
+<%= form_for(spreadsheet) do |f| %>
+  <% if spreadsheet.persisted? %>
+
+    <p class="text-muted">
+      Key: <%= spreadsheet.key %>
+    </p>
+
+    <div class="form-group">
+      <%= f.label(:data_gid, 'Data Worksheet GID') %>
+      <%= f.collection_select(
+        :data_gid,
+        spreadsheet.worksheets,
+        :gid,
+        Proc.new{|worksheet| "Title: #{worksheet.title} | GID: #{worksheet.gid}"},
+        {},
+        {:class => 'form-control'}
+      ) %>
+    </div>
+    <div class="form-group">
+      <%= f.label(:map_gid, 'Map Worksheet GID') %>
+      <%= f.collection_select(
+        :map_gid,
+        spreadsheet.worksheets,
+        :gid,
+        Proc.new{|worksheet| "Title: #{worksheet.title} | GID: #{worksheet.gid}"},
+        {},
+        {:class => 'form-control'}
+      ) %>
+    </div>
+
+  <% else %>
+
+    <div class="form-group">
+      <%= f.label(:key, 'Spreadsheet Key') %>
+      <%= f.text_field(:key, :class => 'form-control') %>
+    </div>
+
+  <% end %>
+
+  <%= f.submit(
+    spreadsheet.persisted? ? 'Update Spreadsheet Reference' : 'Link Local Reference to Spreadsheet with this Key',
+    :class => 'btn btn-primary'
+    ) %>
+<% end %>

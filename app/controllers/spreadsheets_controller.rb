@@ -1,29 +1,62 @@
 class SpreadsheetsController < ApplicationController
+  before_action :set_spreadsheet, :only => [:show, :edit, :update, :destroy]
+
   def index
-    # Perhaps this values could eventually go in a form?
-    # @spreadsheet = Spreadsheet.find_by_key_worksheet(
-    #   "1hgqLdmi1830DXiwSbT1IcSPVkTp4zn_HxKB7zo-7tzc",
-    #   0
-    # )
-    
-    # @spreadsheet_range = @spreadsheet.range(
-    #   10..@spreadsheet.num_rows-1,
-    #   3..3
-    # ).reject{ |el| el[0].empty? }
+    @spreadsheets = Spreadsheet.all
+  end
 
-    # @spreadsheet_range = @spreadsheet.range(
-    #   1..@spreadsheet.num_rows,
-    #   1..@spreadsheet.num_cols
-    # )
+  def show
+  end
 
-    # @spreadsheet_range.each do |link|
-    #   @quora_task = QuoraTask.new(link[0])
-    #   answer_count = @quora_task.get_answer_count
-    #   view_count = @quora_task.get_view_count
-    #   follower_count = @quora_task.get_follower_count
-    #   last_asked_date = @quora_task.get_last_asked_date
-    #   upvote_count = @quora_task.get_upvote_count
-    #   link.push(answer_count).push(view_count).push(follower_count).push(last_asked_date).push(upvote_count)
+  def new
+    @spreadsheet = Spreadsheet.new
+  end
+
+  def edit
+  end
+
+  def create
+    @spreadsheet = Spreadsheet.new(spreadsheet_params)
+    if @spreadsheet.save
+      flash[:success] = 'Spreadsheet linked'
+      redirect_to spreadsheets_path
+    else
+      flash[:error] = 'Spreadsheet not linked'
+      render :new
     end
+  end
+
+  def update
+    if @spreadsheet.update(spreadsheet_params)
+      flash[:success] = 'Spreadsheet updated'
+      redirect_to spreadsheet_path(@spreadsheet)
+    else
+      flash[:error] = 'Spreadsheet not updated'
+      render :edit
+    end
+  end
+
+  def destroy
+    if @spreadsheet.destroy
+      flash[:success] = 'Spreadsheet reference destroyed'
+    else
+      flash[:error] = 'Spreadsheet reference not destroyed'
+    end
+    redirect_to spreadsheets_path
+  end
+
+
+  private
+  def set_spreadsheet
+    @spreadsheet = Spreadsheet.find_by_id(params[:id])
+  end
+
+  def spreadsheet_params
+    params.require(:spreadsheet)
+      .permit(
+        :key,
+        :data_gid,
+        :map_gid
+      )
   end
 end

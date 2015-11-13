@@ -1,0 +1,97 @@
+<div class="row">
+  <div class="col-xs-12">
+
+    <div class="spreadsheet">
+      <h2>
+        Title: <%= spreadsheet.title %>
+      </h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Key</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr>
+            <td>
+              Spreadsheet Link
+            </td>
+            <td>
+              <%= link_to(spreadsheet.human_url, spreadsheet.human_url, :target => '_blank') %>
+            </td>
+          </tr>
+          
+          <tr>
+            <td>
+              Key
+            </td>
+            <th>
+             <%= spreadsheet.key %> 
+            </th>
+          </tr>
+
+          <tr>
+            <td>
+              Number of Worksheets
+            </td>
+            <td>
+              <%= spreadsheet.worksheets.length %>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              Data Worksheet
+            </td>
+            <td>
+
+              <% if spreadsheet.data_gid %>
+
+                <%= link_to("Title: #{spreadsheet.data_worksheet.title} | GID: #{spreadsheet.data_worksheet.gid}", spreadsheet.data_worksheet.human_url, :target => '_blank') %>
+
+              <% else %>
+
+                <span class="text-danger">
+                  Click edit to add data worksheet
+                </span>
+
+              <% end %>
+
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              Map Worksheet
+            </td>
+            <td>
+
+              <% if spreadsheet.data_gid %>
+
+                <%= link_to("Title: #{spreadsheet.map_worksheet.title} | GID: #{spreadsheet.map_worksheet.gid}", spreadsheet.map_worksheet.human_url, :target => '_blank') %>
+
+              <% else %>
+
+                <span class="text-danger">
+                  Click edit to add map worksheet
+                </span>
+
+              <% end %>
+
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+
+      <div class="actions">
+        <%= link_to('Edit Spreadsheet Reference', edit_spreadsheet_path(spreadsheet), :class => 'btn btn-primary') %>
+
+        <%= link_to('Delete Local Reference to this Spreadsheet', spreadsheet_path(spreadsheet), :method => :delete, :class => 'btn btn-danger' ) %>
+      </div>
+    </div><!-- spreadsheet -->
+
+  </div><!-- col -->
+</div><!-- row -->

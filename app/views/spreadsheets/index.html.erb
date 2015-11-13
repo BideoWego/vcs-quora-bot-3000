@@ -1,3 +1,32 @@
-<h1>
-  Where are we?
-</h1>
+<div class="row">
+  <div class="col-xs-12">
+    <header class="page-header clearfix">
+      <h1 class="pull-left">
+        Referenced Spreadsheets Index
+      </h1>
+
+      <%= link_to('+ Link New Local Spreadsheet Reference', new_spreadsheet_path, :class => 'btn btn-primary btn-lg pull-right') %>
+    </header>
+
+    <% if @spreadsheets.present? %>
+      
+      <ul class="list-group">
+        <% @spreadsheets.each do |spreadsheet| %>
+          <li class="list-group-item">
+            
+            <%= render spreadsheet %>
+
+          </li>
+        <% end %>
+      </ul>
+
+    <% else %>
+
+      <p class="text-warning">
+        No spreadsheets yet
+      </p>
+
+    <% end %>
+
+  </div>
+</div>

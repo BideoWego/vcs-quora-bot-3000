@@ -1,19 +1,13 @@
-class Spreadsheet
-  include ActiveModel::Model
+class Spreadsheet < ActiveRecord::Base
+  after_initialize :create_internal_spreadsheet
 
-  attr_accessor :key,
-                :worksheet,
-                :spreadsheet
+  validates :key,
+            :presence => true,
+            :uniqueness => true
 
-  def initialize(attributes={})
-    # This should take the given attributes
-    # and map them into a valid Spreadsheet object
-    # 
-    # For the moment it relies on being
-    # passed a :key, :worksheet, and :spreadsheet
-    # that all correspond
-    attributes.each {|key, value| self.send("#{key}=", value)}
-  end
+  validate :create_internal_spreadsheet
+
+  attr_accessor :internal_spreadsheet
 
   # Same method that was in Doc
   # namespaced better under a Spreadsheet class
@@ -22,7 +16,7 @@ class Spreadsheet
     row_range.each do |row|
       range_row = []
       col_range.each do |col|
-        range_row << @spreadsheet[row, col]
+        range_row << @internal_spreadsheet[row, col]
       end
       range << range_row
     end
@@ -30,28 +24,40 @@ class Spreadsheet
   end
 
   # Forwards any missing methods
-  # to the @spreadsheet object
+  # to the @internal_spreadsheet object
   # only if it responds to the method
   def method_missing(name, *args)
-    p name
-    if @spreadsheet.respond_to?(name)
-      args.length > 0 ? @spreadsheet.send(name, args) : @spreadsheet.send(name)
+    if @internal_spreadsheet.respond_to?(name)
+      args.length > 0 ? @internal_spreadsheet.send(name, args) : @internal_spreadsheet.send(name)
     else
       raise NoMethodError, "Undefined method #{name} for Spreadsheet"
     end
   end
 
-  # Altered method from Doc (now a factory method)
-  # Queries the GoogleDriveAPI for a worksheet
-  # Then returns a new Spreadsheet instance from it
-  def self.find_by_key_worksheet(key, worksheet)
-    spreadsheet = GoogleDriveAPI.session
-      .spreadsheet_by_key(key)
-      .worksheets[worksheet]
-    Spreadsheet.new(
-      :spreadsheet => spreadsheet,
-      :key => key,
-      :worksheet => worksheet
-    )
+  def data_worksheet
+    @internal_spreadsheet.worksheet_by_gid(data_gid)
+  end
+
+  def map_worksheet
+    @internal_spreadsheet.worksheet_by_gid(map_gid)
+  end
+
+
+  private
+  # Used as an after_initialize callback
+  # and validation callback
+  # 
+  # Creates an internal spreadsheet from API
+  # If creation is unsuccessful
+  # it appends the API's exception message
+  # as a validation error to the model
+  # instance
+  def create_internal_spreadsheet
+    begin
+      @internal_spreadsheet = GoogleDriveAPI.session
+        .spreadsheet_by_key(key) if key && key.chars.present?
+    rescue Google::APIClient::ClientError, GoogleDrive::Error => e
+      self.errors.add(:key, " raised a Google API error - #{e.message}")
+    end
   end
 end
