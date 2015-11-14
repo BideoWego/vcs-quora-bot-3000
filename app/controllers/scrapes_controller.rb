@@ -14,16 +14,6 @@ class ScrapesController < ApplicationController
 
   def create
     @scrape = Scrape.new(scrape_params)
-
-    # Put this in the model after_initialize????
-    # Communicate between spreadsheet
-    # and scrape to pull correct data
-    # store data in model
-    @scrape.data = QuoraTask.new(
-      'https://www.quora.com/What-online-code-bootcamps-will-emerge-on-top-in-1-2-years-Why'
-    ).scrape
-
-    # Then save
     if @scrape.save
       flash[:success] = 'Scrape created'
       redirect_to @scrape

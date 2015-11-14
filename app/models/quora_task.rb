@@ -33,7 +33,16 @@ class QuoraTask < ScrapeTask
   def upvote_count
     # Need to click updated at link
     # Follow to get upvote count on next page
-  	@page.search('.AnswerVoterListModal .modal_title').inner_text
+  	# @page.search('.AnswerVoterListModal .modal_title').inner_text
+
+    links = @page.search('.ContentFooter.AnswerFooter a')
+    href = links.first.attributes['href'].value
+    upvotes_page = @page.links_with(:href => href).first.click
+    upvotes_page.search('.AnswerStatsSection .AnswerUpvotesStatsRow').text
+  end
+
+  def viking_answer_date
+    @page.search('.ContentFooter.AnswerFooter a[href*=Erik-Trautman]').first.text
   end
 
   def scrape
@@ -44,6 +53,7 @@ class QuoraTask < ScrapeTask
     data[:follower_count] = follower_count
     data[:last_asked_date] = last_asked_date
     data[:upvote_count] = upvote_count
+    data[:viking_answer_date] = viking_answer_date
     data
   end
 
