@@ -36,13 +36,18 @@ class QuoraTask < ScrapeTask
   	# @page.search('.AnswerVoterListModal .modal_title').inner_text
 
     links = @page.search('.ContentFooter.AnswerFooter a')
-    href = links.first.attributes['href'].value
-    upvotes_page = @page.links_with(:href => href).first.click
-    upvotes_page.search('.AnswerStatsSection .AnswerUpvotesStatsRow').text
+    if links.present?
+    	href = links.first.attributes['href'].value
+    	upvotes_page = @page.links_with(:href => href).first.click
+    	upvotes_page.search('.AnswerStatsSection .AnswerUpvotesStatsRow').text
+    else
+    	"Upvote count not found"
+    end
   end
 
   def viking_answer_date
-    @page.search('.ContentFooter.AnswerFooter a[href*=Erik-Trautman]').first.text
+    result = @page.search('.ContentFooter.AnswerFooter a[href*=Erik-Trautman]')
+    result.present? ? result.first.text : "No Viking Answer"
   end
 
   def scrape
