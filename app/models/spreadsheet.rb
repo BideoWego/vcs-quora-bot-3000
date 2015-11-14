@@ -1,4 +1,6 @@
 class Spreadsheet < ActiveRecord::Base
+  has_many :scrapes
+
   after_initialize :create_internal_spreadsheet
 
   validates :key,

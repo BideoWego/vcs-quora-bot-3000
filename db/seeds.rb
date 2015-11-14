@@ -17,9 +17,16 @@ else
 end
 
 puts 'Creating Spreadsheets'
-
 Spreadsheet.create(
   :key => SPREADSHEET_KEY
 )
+
+puts 'Creating Scrapes'
+5.times do
+  scrape = Scrape.create(
+    :data => {:foo => 'bar'},
+    :spreadsheet_id => Spreadsheet.first.id
+  )
+end
 
 puts 'done!'
