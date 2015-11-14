@@ -43,7 +43,18 @@
               <%= link_to('Show Data', '#', :class => "scrape-data-toggle", :data => {:hidden => true, :scrape_id => scrape.id}) %>
             </td>
             <td>
-              <pre id="scrape-data-<%= scrape.id %>" class="scrape-data"><%= JSON.pretty_generate(scrape.data) %></pre>
+
+              <% if scrape.data %>
+
+              <pre id="scrape-data-<%= scrape.id %>" class="scrape-data"><%= JSON.pretty_generate(JSON.parse(scrape.data.to_json)) %></pre>
+
+              <% else %>
+
+                <p class="text-danger">
+                  No data
+                </p>
+
+              <% end %>
             </td>
           </tr>
 
@@ -52,9 +63,9 @@
     </div><!-- scrape -->
 
     <div class="actions">
-      <%= link_to('Upload Scrape Data to Spreadsheet', '#', :class => 'btn btn-primary') %>
+      <%= link_to('Upload Scrape Data to Spreadsheet', scrape_spreadsheet_path(scrape, scrape.spreadsheet), :method => :put, :class => 'btn btn-primary') %>
 
-      <%= link_to('Delete Scrape', '#', :method => :delete, :class => 'btn btn-danger', :data => {:confirm => 'Are you sure you want to delete this scrape?'}) %>
+      <%= link_to('Delete Scrape', scrape_path(scrape), :method => :delete, :class => 'btn btn-danger', :data => {:confirm => 'Are you sure you want to delete this scrape?'}) %>
     </div><!-- actions -->
 
   </div><!-- col -->

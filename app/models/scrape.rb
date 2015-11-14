@@ -2,20 +2,19 @@ class Scrape < ActiveRecord::Base
   belongs_to :spreadsheet
   serialize :data, JSON
 
-  after_save :do_scrape
+  before_save :do_scrape
 
 
   private
   def do_scrape
     data = {}
-    all_urls = self.spreadsheet.generate_urls
-    # iterate urls
-    # append to data
-    # set data on model
-    all_urls.each do |quora_url|
+    temp_spreadsheet = Spreadsheet.find(self.spreadsheet_id)
+    all_urls = temp_spreadsheet.generate_urls
+    total = all_urls.length
+    all_urls.each_with_index do |quora_url, i|
+      puts "Scraping #{i + 1} of #{total} urls"
     	data[quora_url] = QuoraTask.new(quora_url).scrape
     end
     self.data = data
-    binding.pry
   end
 end

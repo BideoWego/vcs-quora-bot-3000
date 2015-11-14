@@ -62,6 +62,25 @@ class Spreadsheet < ActiveRecord::Base
   	all_urls.reject!{ |x| !x[0].match(URL_REGEX) }.flatten
   end
 
+  # Upload
+  def upload(scrape_id)
+    scrape = self.scrapes.find_by_id(scrape_id)
+    current_row = self.map_worksheet[2,3].to_i
+    scrape.data.each do |key, value|
+      remote_url = self.data_worksheet[current_row,3]
+      if key == remote_url
+        self.data_worksheet[current_row,index_from_col_letter('e')] = scrape.data[key]['last_asked_date']
+        self.data_worksheet[current_row,index_from_col_letter('f')] = scrape.data[key]['view_count']
+        self.data_worksheet[current_row,index_from_col_letter('g')] = scrape.data[key]['follower_count']
+        self.data_worksheet[current_row,index_from_col_letter('h')] = scrape.data[key]['answer_count']
+        self.data_worksheet[current_row,index_from_col_letter('j')] = scrape.data[key]['upvote_count']
+        self.data_worksheet[current_row,index_from_col_letter('k')] = scrape.data[key]['viking_answer_date']
+      end
+      current_row += 1
+    end
+    self.data_worksheet.save
+  end
+
 
   private
   # Used as an after_initialize callback

@@ -27,12 +27,10 @@ class SpreadsheetsController < ApplicationController
   end
 
   def update
-    if @spreadsheet.update(spreadsheet_params)
-      flash[:success] = 'Spreadsheet updated'
-      redirect_to spreadsheet_path(@spreadsheet)
+    if params[:scrape_id]
+      upload_scrape_data_to_spreadsheet
     else
-      flash[:error] = 'Spreadsheet not updated'
-      render :edit
+      update_spreadsheet_reference
     end
   end
 
@@ -59,4 +57,26 @@ private
         :map_gid
       )
   end
+
+  def upload_scrape_data_to_spreadsheet
+    if @spreadsheet.upload(params[:scrape_id])
+      flash[:success] = 'Scrape data uploaded'
+    else
+      flash[:error] = 'Scrape data not uploaded'
+    end
+    redirect_to scrapes_path
+  end
+
+  def update_spreadsheet_reference
+    if @spreadsheet.update(spreadsheet_params)
+      flash[:success] = 'Spreadsheet updated'
+      redirect_to spreadsheet_path(@spreadsheet)
+    else
+      flash[:error] = 'Spreadsheet not updated'
+      render :edit
+    end
+  end
 end
+
+
+
