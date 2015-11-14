@@ -1,5 +1,8 @@
 # Changelog
 
+## 1899a5b
+- Added ability to upload scrape data via button
+
 ## ae0007b
 - Scrapes resource
     * There is now a `scrapes` table in database
