@@ -10,24 +10,28 @@ class QuoraTask < ScrapeTask
     @url = url
   	@agent = Mechanize.new
   	@agent.history_added = Proc.new {sleep 1}
-  	@agent.user_agent_alias = 'Mac Safari'
+  	@agent.user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36'
   	@page = @agent.get(@url)
   end
 
   def answer_count
-  	@page.search('.answer_count').inner_text
+  	count = @page.search('.answer_count').inner_text
+  	extract_num(count.empty? ? "No Answers Yet" : count)
   end
 
   def view_count
-  	@page.search('.QuestionViewsStatsRow').inner_text
+  	count = @page.search('.QuestionViewsStatsRow').inner_text
+  	extract_num(count.empty? ? @page.search('.ViewsRow').inner_text : count)
   end
 
   def follower_count
-  	@page.search('.QuestionFollowersStatsRow').inner_text
+  	count = @page.search('.QuestionFollowersStatsRow').inner_text
+  	extract_num(count.empty? ? @page.search('.FollowersRow').inner_text.split.first(2).join(' ') : count)
   end
 
   def last_asked_date
-  	@page.search('.QuestionLastAskedTime').inner_text
+  	asked_date = @page.search('.QuestionLastAskedTime').inner_text 
+  	extract_date(asked_date.empty? ? @page.search('.AskedRow').inner_text : asked_date)
   end
 
   def upvote_count
@@ -39,7 +43,7 @@ class QuoraTask < ScrapeTask
     if links.present?
     	href = links.first.attributes['href'].value
     	upvotes_page = @page.links_with(:href => href).first.click
-    	upvotes_page.search('.AnswerStatsSection .AnswerUpvotesStatsRow').text
+    	extract_num(upvotes_page.search('.AnswerStatsSection .AnswerUpvotesStatsRow').text)
     else
     	"Upvote count not found"
     end
@@ -47,7 +51,7 @@ class QuoraTask < ScrapeTask
 
   def viking_answer_date
     result = @page.search('.ContentFooter.AnswerFooter a[href*=Erik-Trautman]')
-    result.present? ? result.first.text : "No Viking Answer"
+    result.present? ? extract_date(result.first.text) : "No Viking Answer"
   end
 
   def scrape
@@ -61,6 +65,39 @@ class QuoraTask < ScrapeTask
     data[:viking_answer_date] = viking_answer_date
     data
   end
+
+private
+	# Return an integer from a string with an integer inside of it
+	def extract_num(string)
+		if string =~ /\d/
+			# This is a strange case that I'd like to account for
+			if string == '100+ Answers'
+				'100+'
+			else
+				string.split('').map {|x| x[/\d+/]}.join('')
+			end
+		else
+			string
+		end
+	end
+
+	# Return a date from a string with a relative date inside of it
+	def extract_date(string)
+		# We need to make sure there's a potential date in there or 
+		# else it could fail
+		if string.match(/(\d.*)\s/).present?
+			date_string = string.match(/(\d.*)\s/).captures[0]
+			if date_string[-1] == "d"
+				date_string.slice!(-1)
+				date_string.to_i.days.ago.strftime("%m/%d/%Y")
+			elsif date_string[-1] == "w"
+				date_string.slice!(-1)
+				date_string.to_i.weeks.ago.strftime("%m/%d/%Y")
+			else
+				string
+			end
+		end
+	end
 
   # Named ranges
 
