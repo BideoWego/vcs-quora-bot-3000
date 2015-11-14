@@ -58,8 +58,7 @@ map_gid:    872208525
 
 ## Scraping
 
-- Scrape resource?
-- Scrape action, scrape with (choose spreadsheet dropdown) i.e.(X data worksheet and Y map worksheet) (named range functionality)
+- Scrape with (choose spreadsheet dropdown) i.e.(X data worksheet and Y map worksheet) (named range functionality)
 - Show urls that will be scraped before scraping
 - Show scrape progress (AJAX)
 - Show scrape results before saving to Google doc??
@@ -68,7 +67,7 @@ map_gid:    872208525
 
 # Changelog
 
-## -
+## ae0007b
 - Scrapes resource
     * There is now a `scrapes` table in database
     * A form for only creating scrapes exists
