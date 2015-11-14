@@ -11,7 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151113064035) do
+ActiveRecord::Schema.define(version: 20151114004528) do
+
+  create_table "scrapes", force: :cascade do |t|
+    t.text     "data"
+    t.integer  "spreadsheet_id"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
+
+  add_index "scrapes", ["spreadsheet_id"], name: "index_scrapes_on_spreadsheet_id"
 
   create_table "spreadsheets", force: :cascade do |t|
     t.string   "key"

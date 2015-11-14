@@ -3,34 +3,48 @@
 # --------------------------------------------
 
 class QuoraTask < ScrapeTask
-  END_POINT = 'https://www.quora.com/'
-  TARGET = '/api/mobile_expanded_voter_list?type=answer&amp;key=oQs9fx3AqQm'
+  attr_accessor :url,
+                :page
 
-  def initialize(page)
+  def initialize(url)
+    @url = url
   	@agent = Mechanize.new
   	@agent.history_added = Proc.new {sleep 1}
   	@agent.user_agent_alias = 'Mac Safari'
-  	@page = @agent.get(page)
+  	@page = @agent.get(@url)
   end
 
-  def get_answer_count
+  def answer_count
   	@page.search('.answer_count').inner_text
   end
 
-  def get_view_count
+  def view_count
   	@page.search('.QuestionViewsStatsRow').inner_text
   end
 
-  def get_follower_count
+  def follower_count
   	@page.search('.QuestionFollowersStatsRow').inner_text
   end
 
-  def get_last_asked_date
+  def last_asked_date
   	@page.search('.QuestionLastAskedTime').inner_text
   end
 
-  def get_upvote_count
+  def upvote_count
+    # Need to click updated at link
+    # Follow to get upvote count on next page
   	@page.search('.AnswerVoterListModal .modal_title').inner_text
+  end
+
+  def scrape
+    data = {}
+    data[:url] = @url
+    data[:answer_count] = answer_count
+    data[:view_count] = view_count
+    data[:follower_count] = follower_count
+    data[:last_asked_date] = last_asked_date
+    data[:upvote_count] = upvote_count
+    data
   end
 
   # Named ranges

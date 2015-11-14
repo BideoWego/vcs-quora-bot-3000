@@ -1,20 +1,24 @@
 <div class="row">
   <div class="col-xs-12">
+    
     <header class="page-header clearfix">
       <h1 class="pull-left">
-        Referenced Spreadsheets Index
+        Scrapes Index
+        <small>
+          (Ordered by Neweset - Oldest)
+        </small>
       </h1>
 
-      <%= link_to('+ Link New Local Spreadsheet Reference', new_spreadsheet_path, :class => 'btn btn-primary btn-lg pull-right') %>
+      <%= link_to('+ New Scrape', new_scrape_path, :class => 'btn btn-primary btn-lg pull-right') %>
     </header>
 
-    <% if @spreadsheets.present? %>
+    <% if @scrapes.present? %>
       
       <ul class="list-group">
-        <% @spreadsheets.each do |spreadsheet| %>
+        <% @scrapes.each do |scrape| %>
           <li class="list-group-item">
             
-            <%= render spreadsheet %>
+            <%= render scrape %>
 
           </li>
         <% end %>
@@ -23,10 +27,11 @@
     <% else %>
 
       <p class="text-warning">
-        No spreadsheets yet
+        No scrapes yet
       </p>
 
     <% end %>
 
   </div><!-- col -->
 </div><!-- row -->
+

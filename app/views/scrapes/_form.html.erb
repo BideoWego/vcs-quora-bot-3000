@@ -1,0 +1,16 @@
+<%= render :partial => 'shared/errors', :locals => {:object => scrape} %>
+
+<%= form_for(scrape) do |f| %>
+  <div class="form-group">
+    <%= f.label(:spreadsheet_id, 'Choose a spreadsheet to scrape with...') %>
+    <%= f.collection_select(
+      :spreadsheet_id,
+      Spreadsheet.all,
+      :id,
+      Proc.new{|spreadsheet| "#{spreadsheet.title} - #{spreadsheet.key}"},
+      {},
+      {:class => 'form-control'}
+    ) %>
+  </div>
+  <%= f.submit('Do Scrape!', :class => 'btn btn-primary') %>
+<% end %>

@@ -58,25 +58,10 @@ map_gid:    872208525
 
 ## Scraping
 
-- Scrape resource?
-- Scrape action, scrape with (choose spreadsheet dropdown) i.e.(X data worksheet and Y map worksheet) (named range functionality)
+- Scrape with (choose spreadsheet dropdown) i.e.(X data worksheet and Y map worksheet) (named range functionality)
 - Show urls that will be scraped before scraping
 - Show scrape progress (AJAX)
 - Show scrape results before saving to Google doc??
-
-----
-
-# Changelog
-
-## 86c5013
-- Spreadsheets resource
-    * There is now a `spreadsheets` table in database
-    * A form for creating and editing spreadsheets exists
-    * The form validates a spreadsheet key through the Google API
-    * The form does NOT validate the data and map worksheet GIDs
-    * However, it only allows them to be set from a dropdown generated from the referenced spreadsheet from the Google API once the key has been persisted
-    * Spreadsheets all have edit and delete links
-    * Spreadsheets all have links to the relevant Google Docs
 
 
 
