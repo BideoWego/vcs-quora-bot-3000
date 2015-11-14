@@ -46,7 +46,7 @@ class SpreadsheetsController < ApplicationController
   end
 
 
-  private
+private
   def set_spreadsheet
     @spreadsheet = Spreadsheet.find_by_id(params[:id])
   end
