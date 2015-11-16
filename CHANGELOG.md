@@ -1,5 +1,8 @@
 # Changelog
 
+## (Unreleased)
+- Add scrape progress feedback to user via AJAX and session
+
 ## 860d219
 - Remove unused classes
 
