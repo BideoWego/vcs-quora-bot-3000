@@ -1,5 +1,18 @@
 # Changelog
 
+## 860d219
+- Remove unused classes
+
+## 579a6b4
+- Add Scrape validation to check if associated spreadsheet has a data and map worksheet
+- Update `extract_date` to format a time as date when time is hours ago
+- Update display of `created_at` scrape to be formatted
+
+## 5e65577
+- Fix scrape to be more reliable in returning values for every url scrape
+- Set more deliberate user agent for Mechanize in Scrape
+- Add `extract_num` and `extract_date` methods to Scrape for cleaning up retrieved data
+
 ## 1899a5b
 - Added ability to upload scrape data via button
 
