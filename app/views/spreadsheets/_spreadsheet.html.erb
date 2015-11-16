@@ -89,7 +89,7 @@
       <div class="actions">
         <%= link_to('Edit Spreadsheet Reference', edit_spreadsheet_path(spreadsheet), :class => 'btn btn-primary') %>
 
-        <%= link_to('Delete Local Reference to this Spreadsheet', spreadsheet_path(spreadsheet), :method => :delete, :class => 'btn btn-danger', :data => {:confirm => 'Are you sure you want to delete this spreadsheet reference?'}) %>
+        <%= link_to('Delete Local Reference to this Spreadsheet', spreadsheet_path(spreadsheet), :method => :delete, :class => 'btn btn-danger', :data => {:confirm => 'Are you sure you want to delete this spreadsheet reference? This will delete all scrapes created with this spreadsheet reference!'}) %>
       </div><!-- actions -->
 
     </div><!-- spreadsheet -->

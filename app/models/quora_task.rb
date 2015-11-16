@@ -2,7 +2,7 @@
 # For now I'm putting ideas and mechanize notes here
 # --------------------------------------------
 
-class QuoraTask < ScrapeTask
+class QuoraTask
   attr_accessor :url,
                 :page
 
@@ -45,7 +45,7 @@ class QuoraTask < ScrapeTask
     	upvotes_page = @page.links_with(:href => href).first.click
     	extract_num(upvotes_page.search('.AnswerStatsSection .AnswerUpvotesStatsRow').text)
     else
-    	"Upvote count not found"
+    	"Upvote count not be found"
     end
   end
 
@@ -87,7 +87,10 @@ private
 		# else it could fail
 		if string.match(/(\d.*)\s/).present?
 			date_string = string.match(/(\d.*)\s/).captures[0]
-			if date_string[-1] == "d"
+      if date_string[-1] == 'h'
+        date_string.slice!(-1)
+        0.days.ago.strftime("%m/%d/%Y")
+			elsif date_string[-1] == "d"
 				date_string.slice!(-1)
 				date_string.to_i.days.ago.strftime("%m/%d/%Y")
 			elsif date_string[-1] == "w"

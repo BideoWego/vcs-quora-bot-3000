@@ -1,5 +1,5 @@
 class Spreadsheet < ActiveRecord::Base
-  has_many :scrapes
+  has_many :scrapes, :dependent => :destroy
 
   after_initialize :create_internal_spreadsheet
 
