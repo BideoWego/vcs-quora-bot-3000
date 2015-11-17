@@ -1,7 +1,16 @@
 # Changelog
 
 ## (Unreleased)
-- Add scrape progress feedback to user via AJAX and session
+- 
+
+## abdd0cd
+- Add `rake scrape:quora`, and `rake scrape:first` to scrape with most recent spreadsheet
+- Add `rake scrape:upload` to upload most recent scrape
+- Add `rake scrape:auto` to perform both scrape and upload in succession
+- Update `scrapes/scrape` view to show time of last performed scrape
+
+## 702f867
+- Move scrape to rake task to avoid HTTP timeout
 
 ## 860d219
 - Remove unused classes
