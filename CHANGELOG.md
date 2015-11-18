@@ -1,7 +1,7 @@
 # Changelog
 
 ## (Unreleased)
-- 
+- Make map/data worksheet reading more dynamic vs. hardcoded
 
 ## abdd0cd
 - Add `rake scrape:quora`, and `rake scrape:first` to scrape with most recent spreadsheet
