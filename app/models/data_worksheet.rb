@@ -1,0 +1,2 @@
+class DataWorksheet < Worksheet
+end

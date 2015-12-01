@@ -1,148 +1,141 @@
-# --------------------------------------------
-# For now I'm putting ideas and mechanize notes here
-# --------------------------------------------
-
 class QuoraTask
   attr_accessor :url,
                 :page
 
+  attr_reader :data
+
   def initialize(url)
     @url = url
-  	@agent = Mechanize.new
-  	@agent.history_added = Proc.new {sleep 1}
-  	@agent.user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36'
-  	@page = @agent.get(@url)
+    @agent = Mechanize.new
+    @agent.history_added = Proc.new {sleep 1}
+    @page = @agent.get(@url)
   end
 
   def answer_count
-  	count = @page.search('.answer_count').inner_text
-  	extract_num(count.empty? ? "No Answers Yet" : count)
+    count = @page.search(css[:answer_count]).text
+    count.empty? ? 'No Answers Yet' : extract_num(count)
   end
 
   def view_count
-  	count = @page.search('.QuestionViewsStatsRow').inner_text
-  	extract_num(count.empty? ? @page.search('.ViewsRow').inner_text : count)
+    count = @page.search(css[:view_count]).text
+    extract_num(count)
   end
 
   def follower_count
-  	count = @page.search('.QuestionFollowersStatsRow').inner_text
-  	extract_num(count.empty? ? @page.search('.FollowersRow').inner_text.split.first(2).join(' ') : count)
+    count = @page.search(css[:follower_count]).text
+    extract_num(count)
   end
 
   def last_asked_date
-  	asked_date = @page.search('.QuestionLastAskedTime').inner_text 
-  	extract_date(asked_date.empty? ? @page.search('.AskedRow').inner_text : asked_date)
+    asked_date = @page.search(css[:last_asked_date]).text
+    extract_date(asked_date)
   end
 
   def upvote_count
-    # Need to click updated at link
-    # Follow to get upvote count on next page
-  	# @page.search('.AnswerVoterListModal .modal_title').inner_text
-
-    links = @page.search('.ContentFooter.AnswerFooter a')
-    if links.present?
-    	href = links.first.attributes['href'].value
-    	upvotes_page = @page.links_with(:href => href).first.click
-    	extract_num(upvotes_page.search('.AnswerStatsSection .AnswerUpvotesStatsRow').text)
+    upvotes_page = page_from_upvotes_link
+    if upvotes_page
+      count = upvotes_page.search(css[:upvote_count]).text
+      extract_num(count)
     else
-    	"Upvote count not be found"
+      "Upvote count not be found"
     end
   end
 
   def viking_answer_date
-    result = @page.search('.ContentFooter.AnswerFooter a[href*=Erik-Trautman]')
+    result = @page.search(css[:viking_answer_date])
     result.present? ? extract_date(result.first.text) : "No Viking Answer"
   end
 
   def scrape
-    data = {}
-    data[:url] = @url
-    data[:answer_count] = answer_count
-    data[:view_count] = view_count
-    data[:follower_count] = follower_count
-    data[:last_asked_date] = last_asked_date
-    data[:upvote_count] = upvote_count
-    data[:viking_answer_date] = viking_answer_date
-    data
+    @data = {
+      :url => @url,
+      :answer_count => answer_count,
+      :view_count => view_count,
+      :follower_count => follower_count,
+      :last_asked_date => last_asked_date,
+      :upvote_count => upvote_count,
+      :viking_answer_date => viking_answer_date
+    }
   end
 
 private
-	# Return an integer from a string with an integer inside of it
-	def extract_num(string)
-		if string =~ /\d/
-			# This is a strange case that I'd like to account for
-			if string == '100+ Answers'
-				'100+'
-			else
-				string.split('').map {|x| x[/\d+/]}.join('')
-			end
-		else
-			string
-		end
-	end
+  def extract_num(string)
+    matches = string.match(/[\d,]+\+?/)
+    if matches
+      string = matches[0]
+      string.gsub(',', '')
+    else
+      string
+    end
+  end
 
-	# Return a date from a string with a relative date inside of it
-	def extract_date(string)
-		# We need to make sure there's a potential date in there or 
-		# else it could fail
-		if string.match(/(\d.*)\s/).present?
-			date_string = string.match(/(\d.*)\s/).captures[0]
-      if date_string[-1] == 'h'
-        date_string.slice!(-1)
-        0.days.ago.strftime("%m/%d/%Y")
-			elsif date_string[-1] == "d"
-				date_string.slice!(-1)
-				date_string.to_i.days.ago.strftime("%m/%d/%Y")
-			elsif date_string[-1] == "w"
-				date_string.slice!(-1)
-				date_string.to_i.weeks.ago.strftime("%m/%d/%Y")
-			else
-				string
-			end
-		end
-	end
+  def extract_date(string)
+    string = ensure_consistent_date_format(string)
+    matches = string.match(/\d{1,2} [a-zA-Z]{3} ?\d{0,4}/)
+    if matches
+      formatted_date_to_numeric(matches[0])
+    else
+      string
+    end
+  end
 
-  # Named ranges
+  def ensure_consistent_date_format(string)
+    p [string]
+    day = string.strip[-3..-1]
+    if Date::ABBR_DAYNAMES.include?(day)
+      target_day = Date.today
+      while target_day.strftime('%a') != day
+        target_day = target_day.prev_day
+      end
+      day_and_month = target_day.strftime('%e %b')
+      string.gsub!(day, day_and_month)
+    end
+    string += " #{Date.today.year.to_s}" unless string =~ /\d{4}/
+    string
+  end
 
-  # Get Mechanize result
-  # agent = Mechanize.new
-  # result = agent.get(url)
+  def formatted_date_to_numeric(date)
+    date_segments = date
+    date_segments = date_segments.split(' ')
+    date_segments.map do |date_segment|
+      date_segment =~ /\d/ ? date_segment : Date::ABBR_MONTHNAMES.index(date_segment).to_s
+    end.join('/')
+  end
 
-  # Element locations and classes may differ
-  # when NOT logged in to Quora
+  def css
+    {
+      :answer_count => 'div.QuestionPageAnswerHeader .answer_count',
+      :link_to_upvote_count => '.ContentFooter.AnswerFooter a',
+      :upvote_count => '.AnswerStatsSection .AnswerUpvotesStatsRow',
+      :viking_answer_date => '.ContentFooter.AnswerFooter a[href*=Erik-Trautman]'
+    }.merge(@page.search('.HighlightsSection').empty? ? safari_css : chrome_css)
+  end
 
-  # Items to scrape
+  def safari_css
+    {
+      :view_count => 'div.QuestionStatsSection .QuestionViewsStatsRow strong',
+      :follower_count => 'div.QuestionStatsSection .QuestionFollowersStatsRow strong',
+      :last_asked_date => 'div.QuestionFollowersList .QuestionLastAskedTime'
+    }
+  end
 
-  # Logged out
-  #   view count                  => div.QuestionViewsStatsRow strong
-  # 
-  #   >  result.search('div.QuestionViewsStatsRow strong').text
-  # 
-  #   followers                   => div.QuestionStatsSection a.QuestionFollowersStatsRow strong
-  # 
-  #   >  result.search('div.QuestionStatsSection a.QuestionFollowersStatsRow strong').text
-  # 
-  #   number of answers           => div.QuestionPageAnswerHeader div.answer_count
-  # 
-  #   >  result.search('div.QuestionPageAnswerHeader div.answer_count').text
-  # 
-  # ---- Maybe votes requires login or javascript??? ----
-  # 
-  #   votes on top answer         => div.AnswerVoterListModal.VoterListModal div.modal_title
-  # 
-  #    > result.search('.AnswerVoterListModalLink').first #???? <<< MUST CLICK IF NOT LOGGED IN!!!!
-  # 
-  # 
-  #   date question was asked     => div.QuestionLastAskedTime
-  # 
-  #   >  result.search('div.QuestionLastAskedTime').text
-  # 
-  # 
-  #   viking answer date          => div.ContentFooter.AnswerFooter a[href*=Erik-Trautman]
-  # 
-  #   >  result.search('div.ContentFooter.AnswerFooter a[href*=Erik-Trautman]').first.text
-  # 
+  def chrome_css
+    {
+      :view_count => 'div.SignupColumn .ViewsRow',
+      :follower_count => '.FollowersRow',
+      :last_asked_date => '.HighlightsSection.SimpleToggle.Toggle.hidden .AskedRow'
+    }
+  end
 
-  # Logged in
-  #   votes on top answer         => div.Answer a.Answer.Upvote.Button span.count
+  def page_from_upvotes_link
+    links = @page.search(css[:link_to_upvote_count])
+    if links.present?
+      href = links.first.attributes['href'].value
+      @page.links_with(:href => href).first.click
+    else
+      nil
+    end
+  end
 end
+
+

@@ -14,8 +14,6 @@ namespace :scrape do
   # 
   # Run with:
   #   $ rake scrape:quora
-  # or
-  #   $ rake scrape:first
   # 
   desc 'Scrapes Quora with the most recently created Spreadsheet and Scrape'
   task :quora => :environment do
@@ -60,9 +58,6 @@ namespace :scrape do
       puts 'No spreadsheet found, do any exist?'
     end
   end
-  # Alias for scrape:quora
-  task :first => :quora
-
 
   # ------------------------------------
   # Upload the scrape
@@ -108,9 +103,9 @@ namespace :scrape do
   # Run with:
   #   $ rake scrape:auto
   # 
-  desc 'Runs scrape:first and then scrape:upload'
+  desc 'Runs scrape:quora and then scrape:upload'
   task :auto => :environment do
-    Rake::Task['scrape:first'].invoke
+    Rake::Task['scrape:quora'].invoke
     Rake::Task['scrape:upload'].invoke
   end
 end

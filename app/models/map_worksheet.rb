@@ -1,0 +1,2 @@
+class MapWorksheet < Worksheet
+end

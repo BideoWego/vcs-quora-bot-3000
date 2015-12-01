@@ -27,6 +27,10 @@ map_gid:    N/A
   Google Drive Gem
 </a>
 
+<a href="http://gimite.net/doc/google-drive-ruby/" target="_blank">
+  Google Drive Gem API Documentation
+</a>
+
 <a href="https://docs.google.com/spreadsheets/d/1cObJm4eFx1oYjMRzgNsgEymoQa6J0oWBUVW2yIRcpVo/edit#gid=872208525" target="_blank">
   Sandbox Spreadsheet (TEST SPREADSHEET)
 </a>

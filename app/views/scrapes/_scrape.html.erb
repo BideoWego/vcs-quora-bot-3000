@@ -46,7 +46,7 @@
 
               <% if scrape.data %>
 
-              <pre id="scrape-data-<%= scrape.id %>" class="scrape-data"><%= JSON.pretty_generate(JSON.parse(scrape.data.to_json)) %></pre>
+                <pre id="scrape-data-<%= scrape.id %>" class="scrape-data"><%= JSON.pretty_generate(JSON.parse(scrape.data.to_json)) %></pre>
 
               <% else %>
 

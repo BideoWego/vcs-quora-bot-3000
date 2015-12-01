@@ -17,15 +17,7 @@ class Spreadsheet < ActiveRecord::Base
   # Same method that was in Doc
   # namespaced better under a Spreadsheet class
   def range(row_range, col_range)
-    range = []
-    row_range.each do |row|
-      range_row = []
-      col_range.each do |col|
-        range_row << data_worksheet[row, col]
-      end
-      range << range_row
-    end
-    range
+    self.data_worksheet.range(row_range, col_range)
   end
 
   # Forwards any missing methods
@@ -42,22 +34,30 @@ class Spreadsheet < ActiveRecord::Base
   # Getter for data worksheet
   # (Sheet with analytics)
   def data_worksheet
-    @data_worksheet = @internal_spreadsheet.worksheet_by_gid(data_gid) unless @data_worksheet
+    @data_worksheet = DataWorksheet.new(
+      :worksheet => @internal_spreadsheet.worksheet_by_gid(data_gid),
+      :spreadsheet => self
+    ) unless @data_worksheet
     @data_worksheet
   end
 
   # Getter for map worksheet
   # (Sheet with named range map)
   def map_worksheet
-    @map_worksheet = @internal_spreadsheet.worksheet_by_gid(map_gid) unless @map_worksheet
+    @map_worksheet = MapWorksheet.new(
+      :worksheet => @internal_spreadsheet.worksheet_by_gid(map_gid),
+      :spreadsheet => self
+    ) unless @map_worksheet
     @map_worksheet
   end
 
   # Generate list of URLs
   def generate_urls
-  	urls_col = index_from_col_letter(self.map_worksheet[2,2])
-  	urls_row = self.map_worksheet[2,3]
-  	all_urls = self.range((urls_row.to_i..self.data_worksheet.num_rows).to_a, (urls_col..urls_col).to_a)
+  	urls_col = self.map_worksheet[2, 'b']
+  	urls_row = self.map_worksheet[2, 'c']
+    row_range = urls_row.to_i..self.data_worksheet.num_rows
+    col_range = urls_col..urls_col
+    all_urls = self.range(row_range, col_range)
   	# Ensure that we only have URLs in our all_urls value
   	all_urls.reject!{ |x| !x[0].match(URL_REGEX) }.flatten
   end
@@ -65,16 +65,16 @@ class Spreadsheet < ActiveRecord::Base
   # Upload
   def upload(scrape_id)
     scrape = self.scrapes.find_by_id(scrape_id)
-    current_row = self.map_worksheet[2,3].to_i
+    current_row = self.map_worksheet[2, 'c'].to_i
     scrape.data.each do |key, value|
-      remote_url = self.data_worksheet[current_row,3]
+      remote_url = self.data_worksheet[current_row, 'c']
       if key == remote_url
-        self.data_worksheet[current_row,index_from_col_letter('e')] = scrape.data[key]['last_asked_date']
-        self.data_worksheet[current_row,index_from_col_letter('f')] = scrape.data[key]['view_count']
-        self.data_worksheet[current_row,index_from_col_letter('g')] = scrape.data[key]['follower_count']
-        self.data_worksheet[current_row,index_from_col_letter('h')] = scrape.data[key]['answer_count']
-        self.data_worksheet[current_row,index_from_col_letter('j')] = scrape.data[key]['upvote_count']
-        self.data_worksheet[current_row,index_from_col_letter('k')] = scrape.data[key]['viking_answer_date']
+        self.data_worksheet[current_row, 'e'] = scrape.data[key]['last_asked_date']
+        self.data_worksheet[current_row, 'f'] = scrape.data[key]['view_count']
+        self.data_worksheet[current_row, 'g'] = scrape.data[key]['follower_count']
+        self.data_worksheet[current_row, 'h'] = scrape.data[key]['answer_count']
+        self.data_worksheet[current_row, 'j'] = scrape.data[key]['upvote_count']
+        self.data_worksheet[current_row, 'k'] = scrape.data[key]['viking_answer_date']
       end
       current_row += 1
     end
@@ -100,9 +100,10 @@ class Spreadsheet < ActiveRecord::Base
     end
   end
 
-  # Get index from column letter
-  def index_from_col_letter(letter)
-  	letters_array = ('a'..'z').to_a
-  	letters_array.index(letter.downcase) + 1
+  # Get index from column letters
+  def index_from_col_letter(letters)
+    Worksheet.col_index_for(letters)
   end
 end
+
+
