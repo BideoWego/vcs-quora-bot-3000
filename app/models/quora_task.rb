@@ -13,22 +13,22 @@ class QuoraTask
 
   def answer_count
     count = @page.search(css[:answer_count]).text
-    count.empty? ? 'No Answers Yet' : extract_num(count)
+    count.empty? ? 'No answer count' : extract_num(count)
   end
 
   def view_count
     count = @page.search(css[:view_count]).text
-    extract_num(count)
+    count.empty? ? 'No view count' : extract_num(count)
   end
 
   def follower_count
     count = @page.search(css[:follower_count]).text
-    extract_num(count)
+    count.empty? ? 'No follower count' : extract_num(count)
   end
 
   def last_asked_date
     asked_date = @page.search(css[:last_asked_date]).text
-    extract_date(asked_date)
+    asked_date.empty? ? 'Last asked date not found' : extract_date(asked_date)
   end
 
   def upvote_count
@@ -37,18 +37,18 @@ class QuoraTask
       count = upvotes_page.search(css[:upvote_count]).text
       extract_num(count)
     else
-      "Upvote count not be found"
+      'Upvote count not be found'
     end
   end
 
   def viking_answer_date
     result = @page.search(css[:viking_answer_date])
-    result.present? ? extract_date(result.first.text) : "No Viking Answer"
+    result.empty? ? 'No Viking Answer' : extract_date(result.first.text)
   end
 
   def scrape
     @data = {
-      :url => @url,
+      :question_url => @url,
       :answer_count => answer_count,
       :view_count => view_count,
       :follower_count => follower_count,
@@ -58,7 +58,8 @@ class QuoraTask
     }
   end
 
-private
+
+  private
   def extract_num(string)
     matches = string.match(/[\d,]+\+?/)
     if matches
@@ -80,7 +81,11 @@ private
   end
 
   def ensure_consistent_date_format(string)
-    p [string]
+    string = day_abbr_to_full_date(string)
+    append_year_if_absent(string)
+  end
+
+  def day_abbr_to_full_date(string)
     day = string.strip[-3..-1]
     if Date::ABBR_DAYNAMES.include?(day)
       target_day = Date.today
@@ -90,6 +95,10 @@ private
       day_and_month = target_day.strftime('%e %b')
       string.gsub!(day, day_and_month)
     end
+    string
+  end
+
+  def append_year_if_absent(string)
     string += " #{Date.today.year.to_s}" unless string =~ /\d{4}/
     string
   end
@@ -132,8 +141,6 @@ private
     if links.present?
       href = links.first.attributes['href'].value
       @page.links_with(:href => href).first.click
-    else
-      nil
     end
   end
 end

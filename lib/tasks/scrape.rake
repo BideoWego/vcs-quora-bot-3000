@@ -31,12 +31,12 @@ namespace :scrape do
 
       # Get it's urls
       puts 'Reading scrape target URLs from spreadsheet'
-      all_urls = spreadsheet.generate_urls
-      total = all_urls.length
+      urls = spreadsheet.generate_urls
+      total = urls.length
       puts "Found #{total} URLs"
 
       # Scrape each url
-      all_urls.each_with_index do |quora_url, i|
+      urls.each_with_index do |quora_url, i|
         puts "Scraping #{i + 1} of #{total} urls"
         data[quora_url] = QuoraTask.new(quora_url).scrape
       end

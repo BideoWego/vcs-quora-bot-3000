@@ -1,4 +1,6 @@
 class Worksheet
+  include NamedRangeable
+
   ALPHA = ('a'..'z').to_a
 
   attr_accessor :spreadsheet,
@@ -78,7 +80,13 @@ class Worksheet
 
 
   protected
+  # Converts an alphabetic range i.e. 'a'..'z'
+  # to it's numeric equivalent 1..26
+  # For convenience
+  # if the parameter is 1 letter i.e. 'a'
+  # it is converted into a range
   def self.alpha_to_numeric_range(alpha_range)
+    alpha_range = alpha_range..alpha_range if alpha_range.is_a?(String)
     if alpha_range.first.is_a?(String)
       numeric_range_first = Worksheet.col_index_for(alpha_range.first)
       numeric_range_last = Worksheet.col_index_for(alpha_range.last)
@@ -90,6 +98,11 @@ class Worksheet
 
 
   private
+  # Internal setter and getter handler
+  # for array [] access
+  # Sets or gets a value based on
+  # number of args and accounts
+  # for type e.g. Fixnum vs String column
   def array_index_accessor(*args)
     if [2, 3].include?(args.length)
       row = args[0]

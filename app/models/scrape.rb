@@ -18,5 +18,4 @@ class Scrape < ActiveRecord::Base
       errors.add(:spreadsheet, 'must have a map worksheet set')
     end
   end
-
 end

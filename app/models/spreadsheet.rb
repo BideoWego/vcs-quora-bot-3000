@@ -2,6 +2,7 @@ class Spreadsheet < ActiveRecord::Base
   has_many :scrapes, :dependent => :destroy
 
   after_initialize :create_internal_spreadsheet
+  after_initialize :populate_attributes
 
   validates :key,
             :presence => true,
@@ -9,15 +10,12 @@ class Spreadsheet < ActiveRecord::Base
 
   validate :create_internal_spreadsheet
 
-  # Thank you: http://code.tutsplus.com/tutorials/8-regular-expressions-you-should-know--net-6149
-  URL_REGEX = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/
+  attr_accessor :internal_spreadsheet,
+                :data_worksheet,
+                :map_worksheet
 
-  attr_accessor :internal_spreadsheet
-
-  # Same method that was in Doc
-  # namespaced better under a Spreadsheet class
-  def range(row_range, col_range)
-    self.data_worksheet.range(row_range, col_range)
+  def refresh
+    populate_attributes
   end
 
   # Forwards any missing methods
@@ -31,54 +29,15 @@ class Spreadsheet < ActiveRecord::Base
     end
   end
 
-  # Getter for data worksheet
-  # (Sheet with analytics)
-  def data_worksheet
-    @data_worksheet = DataWorksheet.new(
-      :worksheet => @internal_spreadsheet.worksheet_by_gid(data_gid),
-      :spreadsheet => self
-    ) unless @data_worksheet
-    @data_worksheet
-  end
-
-  # Getter for map worksheet
-  # (Sheet with named range map)
-  def map_worksheet
-    @map_worksheet = MapWorksheet.new(
-      :worksheet => @internal_spreadsheet.worksheet_by_gid(map_gid),
-      :spreadsheet => self
-    ) unless @map_worksheet
-    @map_worksheet
-  end
-
   # Generate list of URLs
   def generate_urls
-  	urls_col = self.map_worksheet[2, 'b']
-  	urls_row = self.map_worksheet[2, 'c']
-    row_range = urls_row.to_i..self.data_worksheet.num_rows
-    col_range = urls_col..urls_col
-    all_urls = self.range(row_range, col_range)
-  	# Ensure that we only have URLs in our all_urls value
-  	all_urls.reject!{ |x| !x[0].match(URL_REGEX) }.flatten
+    @data_worksheet.sanitized_urls
   end
 
   # Upload
   def upload(scrape_id)
     scrape = self.scrapes.find_by_id(scrape_id)
-    current_row = self.map_worksheet[2, 'c'].to_i
-    scrape.data.each do |key, value|
-      remote_url = self.data_worksheet[current_row, 'c']
-      if key == remote_url
-        self.data_worksheet[current_row, 'e'] = scrape.data[key]['last_asked_date']
-        self.data_worksheet[current_row, 'f'] = scrape.data[key]['view_count']
-        self.data_worksheet[current_row, 'g'] = scrape.data[key]['follower_count']
-        self.data_worksheet[current_row, 'h'] = scrape.data[key]['answer_count']
-        self.data_worksheet[current_row, 'j'] = scrape.data[key]['upvote_count']
-        self.data_worksheet[current_row, 'k'] = scrape.data[key]['viking_answer_date']
-      end
-      current_row += 1
-    end
-    self.data_worksheet.save
+    @data_worksheet.write(scrape.data)
   end
 
 
@@ -100,9 +59,21 @@ class Spreadsheet < ActiveRecord::Base
     end
   end
 
-  # Get index from column letters
-  def index_from_col_letter(letters)
-    Worksheet.col_index_for(letters)
+  def populate_attributes
+    if @internal_spreadsheet
+      @map_worksheet = MapWorksheet.new(
+        :worksheet => @internal_spreadsheet.worksheet_by_gid(map_gid),
+        :spreadsheet => self
+      ) if map_gid
+
+      if data_gid
+        @data_worksheet = DataWorksheet.new(
+          :worksheet => @internal_spreadsheet.worksheet_by_gid(data_gid),
+          :spreadsheet => self
+        )
+        @data_worksheet.create_named_ranges(@map_worksheet)
+      end
+    end
   end
 end
 
