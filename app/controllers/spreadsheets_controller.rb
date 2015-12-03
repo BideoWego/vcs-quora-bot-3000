@@ -1,4 +1,5 @@
 class SpreadsheetsController < ApplicationController
+  before_action :require_credentials
   before_action :set_spreadsheet, :only => [:show, :edit, :update, :destroy]
 
   def index

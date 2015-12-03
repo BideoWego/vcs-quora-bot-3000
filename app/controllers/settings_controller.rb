@@ -33,7 +33,8 @@ class SettingsController < ApplicationController
     if @setting.destroy
       flash[:success] = 'Setting destroyed'
     else
-      flash[:error] = 'Setting not destroyed'
+      flash[:error] = 'Setting not destroyed: ' +
+        @setting.errors.full_messages.join(', ')
     end
     redirect_to settings_path
   end

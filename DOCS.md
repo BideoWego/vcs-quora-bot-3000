@@ -1,10 +1,7 @@
 # DOCS
 
-## Github
-
-<a href="https://github.com/BideoWego/vcs-quora-bot-3000/" target="_blank">
-  Github Repo
-</a>
+These are a collection of links to help with development,
+provide easy access to documentation, keys and IDs.
 
 ## Google Drive Gem API and Docs
 
