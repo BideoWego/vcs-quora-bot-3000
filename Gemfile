@@ -10,7 +10,6 @@ gem 'rails', '4.2.4'
 # ----------------------------------------
 # Added gems
 # ----------------------------------------
-gem 'figaro'
 gem 'google_drive'
 gem 'mechanize'
 
