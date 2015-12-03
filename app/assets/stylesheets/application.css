@@ -18,3 +18,8 @@ body {
   min-height: 768px;
   margin-bottom: 128px;
 }
+
+p {
+  text-indent: 2em;
+  max-width: 512px;
+}

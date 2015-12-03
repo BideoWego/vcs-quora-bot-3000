@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151114004528) do
+ActiveRecord::Schema.define(version: 20151202203943) do
 
   create_table "scrapes", force: :cascade do |t|
     t.text     "data"
@@ -21,6 +21,15 @@ ActiveRecord::Schema.define(version: 20151114004528) do
   end
 
   add_index "scrapes", ["spreadsheet_id"], name: "index_scrapes_on_spreadsheet_id"
+
+  create_table "settings", force: :cascade do |t|
+    t.string   "key"
+    t.string   "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "settings", ["key"], name: "index_settings_on_key", unique: true
 
   create_table "spreadsheets", force: :cascade do |t|
     t.string   "key"

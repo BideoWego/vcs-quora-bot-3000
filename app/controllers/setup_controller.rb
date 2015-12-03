@@ -1,29 +1,39 @@
 class SetupController < ApplicationController
+  def index
+    if GoogleDriveAPI.authorizable?
+      initialize_google_drive_api
+      if GoogleDriveAPI.access_token_fetchable?
+        save_access_token
+      elsif GoogleDriveAPI.without_tokens?
+        @authorization_uri = URI.parse(GoogleDriveAPI.auth.authorization_uri).to_s
+        @redirect_token = Setting.key(:redirect_token)
+      else
+        @access_token = Setting.key(:access_token)
+      end
+    end
+  end
 
-	def setup
-		if params[:client_id] && params[:client_secret]
-			client = Google::APIClient.new
-			auth = client.authorization
-			auth.client_id = params[:client_id]
-			auth.client_secret = params[:client_secret]
-			auth.scope =
-			    "https://www.googleapis.com/auth/drive " +
-			    "https://spreadsheets.google.com/feeds/"
-			auth.redirect_uri = "urn:ietf:wg:oauth:2.0:oob"
-			print("1. Open this page:\n%s\n\n" % auth.authorization_uri)
-			print("2. Enter the authorization code shown in the page: ")
-			auth.code = $stdin.gets.chomp
-			@token = auth.fetch_access_token!
-			access_token = auth.access_token
-		end
-		check_token_data
-	end
 
-private
-	
-	def check_token_data
-		if !@token.nil? && @token["refresh_token"] && @token["refresh_token"].length > 0
-			@refresh_token = @token["refresh_token"]
-		end
-	end
+  private
+  def initialize_google_drive_api
+    GoogleDriveAPI.create_client
+    GoogleDriveAPI.create_auth
+    GoogleDriveAPI.authorize
+    GoogleDriveAPI.create_auth_url
+  end
+
+  def save_access_token
+    GoogleDriveAPI.auth.code = Setting.key(:redirect_token).value
+    @access_token = GoogleDriveAPI.fetch_access_token['refresh_token']
+    setting_params = {
+      :key => :access_token,
+      :value => @access_token
+    }
+    if Setting.create(setting_params)
+      flash.now[:success] = 'Access token saved'
+    else
+      flash.now[:error] = 'Access token not saved'
+    end
+  end
 end
+

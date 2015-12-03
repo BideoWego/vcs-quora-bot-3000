@@ -18,7 +18,7 @@ class ScrapesController < ApplicationController
       flash[:success] = 'Scrape created'
       redirect_to @scrape
     else
-      flash[:error] = 'Scrape not created'
+      flash.now[:error] = 'Scrape not created'
       render :new
     end
   end
@@ -45,3 +45,4 @@ class ScrapesController < ApplicationController
       )
   end
 end
+

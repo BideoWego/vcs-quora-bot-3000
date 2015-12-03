@@ -1,0 +1,20 @@
+Heroku
+------
+
+APP_NAME              My Project
+APP_VERSION           0.0.1
+CLIENT_ID             643541423335-qqivg95ljt8onm2jvfjgqgm4mt82561p.apps.googleusercontent.com
+CLIENT_SECRET         PiSOOueklzcDp3zVCXdpU5L1
+DRIVE_TOKEN_DATA      1/gg5j0GTC68OnRo5CLvat0VmIsbPsi8UDxeLk9sHKYkxIgOrJDtdun6zK6XiATCKT
+
+
+My Local
+--------
+
+APP_NAME              VCS QuoraBot3000 v2
+APP_VERSION           0.0.1
+CLIENT_ID             47248545427-frcudg1lphqbroakukumb9aq869hkmdr.apps.googleusercontent.com
+CLIENT_SECRET         BCytgosq2zVP7WVnIagwVnye
+DRIVE_TOKEN_DATA      1/XKTDt9sCfBTT3b2xdNpjfRJsdhmUmz2EsyrrZYsx86Y
+
+

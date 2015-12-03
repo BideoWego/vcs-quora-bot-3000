@@ -1,0 +1,18 @@
+<div class="row">
+  <div class="col-xs-12">
+    
+    <header class="page-header clearfix">
+      <h1 class="pull-left">
+        Settings Index
+      </h1>
+    </header>
+
+    <%= render :partial => 'form', :locals => {:setting => @app_name} %>
+    <%= render :partial => 'form', :locals => {:setting => @app_version} %>
+    <%= render :partial => 'form', :locals => {:setting => @client_id} %>
+    <%= render :partial => 'form', :locals => {:setting => @client_secret} %>
+    <%= render :partial => 'form', :locals => {:setting => @redirect_token} %>
+    <%= render :partial => 'form', :locals => {:setting => @access_token} %>
+
+  </div><!-- col -->
+</div><!-- row -->

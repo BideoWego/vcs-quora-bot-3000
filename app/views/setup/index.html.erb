@@ -1,0 +1,155 @@
+<div class="row">
+  <div class="col-xs-12">
+    
+    <header class="page-header clearfix">
+      <h1 class="pull-left">
+        Setup
+      </h1>
+    </header>
+
+    <% if @access_token %>
+
+      <h3 class="text-success">
+        Google Drive access verified
+      </h3>
+      <p>
+        You may now create a spreadsheet, scrape and
+        upload data to your Google spreadsheets
+      </p>
+      <br>
+
+      <h4>
+        Creating Spreadsheets
+      </h4>
+      <p>
+        A spreadsheet can be created by providing it's key (ID).
+        This can be found in the spreadsheet URL:
+      </p>
+      <pre>https://docs.google.com/spreadsheets/d/<span style="color:red;">SPREADSHEET_ID_IS_HERE</span>/edit#gid=0</pre>
+      <p>
+        Once the spreadsheet is created you will need to
+        select the worksheet to use as the map and the
+        worksheet to which data will be saved.
+        This can be done via the <code>Edit Spreadsheet Reference</code> form.
+        Each worksheet is represented by it's title and GID also available in the URL:
+      </p>
+      <pre>https://docs.google.com/spreadsheets/d/<span style="color:red;">SPREADSHEET_ID_IS_HERE</span>/edit#gid=<span style="color:red;">GID_HERE</span></pre>
+      <p>
+        After creating a spreadsheet and selecting
+        a map/data worksheet you're now ready to
+        create a scrape.
+      </p>
+      <br>
+
+      <h4>
+        Creating Scrapes
+      </h4>
+      <p>
+        A scrape is created simply by selecting the
+        spreadsheet you wish to use from the provided
+        dropdown.
+      </p>
+      <p class="text-warning">
+        NOTE: You cannot create a scrape unless the
+        selected spreadsheet has a set map/data worksheet.
+      </p>
+      <br>
+
+      <h4>
+        Running and Uploading Scrapes
+      </h4>
+      <ul>
+        <li>
+          Run a new quora scrape:
+          <code>rake scrape:quora</code>
+        </li>
+        <li>
+          Upload data from the last scrape:
+          <code>rake scrape:upload</code>
+        </li>
+        <li>
+          Perform a scrape and upload concurrently:
+          <code>rake scrape:auto</code>
+        </li>
+      </ul>
+      <br>
+
+      <h4>
+        Viewing Scrape Results
+      </h4>
+      <p>
+        Once a scrape is finished, the data
+        is saved as JSON to the database.
+        This can be viewed in the scrapes index
+        by clicking <code>Show Data</code>
+        on the scrape you wish to view.
+      </p>
+      <p>
+        You may also upload the data from the scrape
+        index with the <code>Upload Scrape Data</code>
+        button.
+      </p>
+      <p class="text-info">
+        NOTE: Scraping is not available via a form
+        due to the process being too long to avoid
+        an HTTP timeout.
+      </p>
+      <p>
+        You may also open the spreadsheet
+        via the provided links in the
+        spreadhsheet index.
+      </p>
+      <br>
+
+      <h4>
+        Happy QuoraBot3000 Scraping!
+      </h4>
+
+    <% elsif @authorization_uri && @redirect_token %>
+
+      <h3 class="text-info">
+        Redirect Token Required
+      </h3>
+      <p>
+        Your credentials are saved.
+        Now a redirect token is needed
+        to verify and grant Google Drive access to QuoraBot3000.
+      </p>
+      <ul>
+        <li>Follow the link below</li>
+        <li>Allow this app access to your Google Drive account</li>
+        <li>Follow the redirect</li>
+        <li>Copy and paste the redirect token into the form below</li>
+        <li>Submit the form</li>
+      </ul>
+      <p>
+        Once the above steps are done you should be verified
+        to access your Google Drive via QuoraBot3000!
+      </p>
+      <%= link_to('Get redirect token', @authorization_uri, :target => '_blank', :class => 'btn btn-primary') %>
+      <%= render :partial => 'settings/form', :locals => {:setting => @redirect_token} %>
+
+    <% else %>
+
+      <h3 class="text-danger">
+        Unable to access Google Drive
+      </h3>
+      <p>
+        Before you can become authorized by Google
+        you must set your Google Dev
+        client ID and client secret in
+        <%= link_to('settings', settings_path) %>
+        .
+      </p>
+      <p>
+        If you don't have a client ID or client secret
+        you must create a new app in the
+        <%= link_to('Google Developers Console', 'https://console.developers.google.com', :target => '_blank') %>
+        .
+      </p>
+
+    <% end %>
+
+  </div><!-- col -->
+</div><!-- row -->
+
