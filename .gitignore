@@ -25,6 +25,3 @@
 # ------------------------------------
 *.DS_Store
 .irb_history
-
-# Ignore application configuration
-/config/application.yml
