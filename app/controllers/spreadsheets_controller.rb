@@ -21,7 +21,7 @@ class SpreadsheetsController < ApplicationController
       flash[:success] = 'Spreadsheet linked'
       redirect_to spreadsheets_path
     else
-      flash[:error] = 'Spreadsheet not linked'
+      flash.now[:error] = 'Spreadsheet not linked'
       render :new
     end
   end

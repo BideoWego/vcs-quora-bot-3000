@@ -1,9 +1,18 @@
 source 'https://rubygems.org'
+# Ruby version specified for Heroku
+# defaults to rbenv version if exists
 ruby ENV['RBENV_VERSION'] || '2.2.0'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.4'
+
+# ----------------------------------------
+# Added gems
+# ----------------------------------------
+gem 'figaro'
+gem 'google_drive'
+gem 'mechanize'
 
 group :development, :test do
   # Use sqlite3 as the database for Active Record
@@ -17,6 +26,7 @@ group :production do
   gem 'rails_12factor'
   gem 'puma'
 end
+# ----------------------------------------
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
@@ -36,11 +46,14 @@ gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
 
-# Add Google Drive Gem
-gem 'google_drive'
+# Use ActiveModel has_secure_password
+# gem 'bcrypt', '~> 3.1.7'
 
-# Add Mechanize
-gem 'mechanize'
+# Use Unicorn as the app server
+# gem 'unicorn'
+
+# Use Capistrano for deployment
+# gem 'capistrano-rails', group: :development
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

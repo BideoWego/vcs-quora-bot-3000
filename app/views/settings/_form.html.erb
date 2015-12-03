@@ -1,0 +1,27 @@
+<%= render :partial => 'shared/errors', :locals => {:object => setting} %>
+
+<% setting_title = setting.key.to_s.titleize %>
+
+<%= form_for(setting) do |f| %>
+  <div class="form-group">
+    <h3>
+      <%= setting_title %>
+      <%= setting_title == 'Client' ? 'ID' : '' %>
+    </h3>
+  </div>
+
+  <div class="form-group">
+    <%= f.text_field(:value, :class => 'form-control') %>
+  </div>
+  <%= f.hidden_field(:key, :class => 'form-control') %>
+
+  <%= f.submit("Set #{setting_title}", :class => 'btn btn-primary') %>
+
+  <% if setting.persisted? %>
+
+    <%= link_to("Delete #{setting_title}", setting_path(setting), :method => :delete, :class => 'btn btn-danger') %>
+
+  <% end %>
+<% end %>
+
+<br>

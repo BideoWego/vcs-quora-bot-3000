@@ -8,7 +8,7 @@
       Spreadsheet.all,
       :id,
       Proc.new{|spreadsheet| "#{spreadsheet.title} - #{spreadsheet.key}"},
-      {},
+      {:include_blank => true},
       {:class => 'form-control'}
     ) %>
   </div>

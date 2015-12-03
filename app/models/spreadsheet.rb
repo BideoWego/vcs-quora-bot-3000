@@ -52,9 +52,10 @@ class Spreadsheet < ActiveRecord::Base
   # instance
   def create_internal_spreadsheet
     begin
+      GoogleDriveAPI.init
       @internal_spreadsheet = GoogleDriveAPI.session
         .spreadsheet_by_key(key) if key && key.chars.present?
-    rescue Google::APIClient::ClientError, GoogleDrive::Error => e
+    rescue Google::APIClient::ClientError, GoogleDrive::Error, StandardError => e
       self.errors.add(:key, " raised a Google API error - #{e.message}")
     end
   end
