@@ -1,4 +1,5 @@
 class ScrapesController < ApplicationController
+  before_action :require_credentials
   before_action :set_scrape, :only => [:show, :destroy]
 
   def index

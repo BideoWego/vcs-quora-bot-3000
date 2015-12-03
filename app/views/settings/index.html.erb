@@ -7,12 +7,36 @@
       </h1>
     </header>
 
-    <%= render :partial => 'form', :locals => {:setting => @app_name} %>
-    <%= render :partial => 'form', :locals => {:setting => @app_version} %>
+    <div class="alert alert-warning">
+      Once set you should not change your Client ID and Client Secret
+      unless you need to switch API accounts.
+    </div>
     <%= render :partial => 'form', :locals => {:setting => @client_id} %>
     <%= render :partial => 'form', :locals => {:setting => @client_secret} %>
+    <br><br>
+
+    <div class="alert alert-warning">
+      No need to change or try to set the Redirect Token here.
+      It is merely available here for convenience.
+      Once the access token is set, it is most likely useless.
+    </div>
     <%= render :partial => 'form', :locals => {:setting => @redirect_token} %>
+    <br><br>
+
+    <div class="alert alert-danger">
+      Don't delete or try to set the Access Token manually!
+      QuoraBot3000 sets the Access Token automatically when
+      retreiving and saving the redirect token.
+    </div>
     <%= render :partial => 'form', :locals => {:setting => @access_token} %>
+    <br><br>
+
+    <div class="alert alert-info">
+      Supplying an App Name and App Version are optional.
+    </div>
+    <%= render :partial => 'form', :locals => {:setting => @app_name} %>
+    <%= render :partial => 'form', :locals => {:setting => @app_version} %>
+    <br><br>
 
   </div><!-- col -->
 </div><!-- row -->

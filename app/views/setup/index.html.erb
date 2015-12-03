@@ -8,7 +8,8 @@
     </header>
 
     <% if @access_token %>
-
+      
+      <!-- Verified -->
       <h3 class="text-success">
         Google Drive access verified
       </h3>
@@ -17,6 +18,26 @@
         upload data to your Google spreadsheets
       </div>
       <br>
+
+
+      <h4>
+        Data/Map Worksheets
+      </h4>
+      <p>
+        The app pulls urls from and populates the data worksheet dynamically by way of the map worksheet. To see an example of how to format your map worksheet visit this
+        <%= link_to('link', 'https://docs.google.com/spreadsheets/d/1cObJm4eFx1oYjMRzgNsgEymoQa6J0oWBUVW2yIRcpVo/edit#gid=872208525', :target => '_blank') %>
+        .
+      </p>
+      <p>
+        This allows the QuoraBot to know the starting row and column of the needed named ranges. It is also recommended that you use the
+        <%= link_to('sandbox spreadsheet', 'https://docs.google.com/spreadsheets/d/1cObJm4eFx1oYjMRzgNsgEymoQa6J0oWBUVW2yIRcpVo/edit#gid=0&vpid=A1', :target => '_blank') %>
+        to get a feel for the app before attempting to use it on a master spreadsheet.
+      </p>
+      <div class="alert alert-danger">
+        NOTE: The `Key` column of the map worksheet represents hard coded keys and is NOT dynamic. DO NOT CHANGE!
+      </div>
+      <br>
+
 
       <h4>
         Creating Spreadsheets
@@ -40,6 +61,7 @@
         create a scrape.
       </p>
       <br>
+
 
       <h4>
         Creating Scrapes
@@ -74,6 +96,7 @@
       </ul>
       <br>
 
+
       <h4>
         Viewing Scrape Results
       </h4>
@@ -107,6 +130,7 @@
 
     <% elsif @authorization_uri && @redirect_token %>
 
+      <!-- Token Required -->
       <h3 class="text-info">
         Redirect Token Required
       </h3>
@@ -131,6 +155,7 @@
 
     <% else %>
 
+      <!-- Client Credentials Required -->
       <h3 class="text-danger">
         Unable to access Google Drive
       </h3>
