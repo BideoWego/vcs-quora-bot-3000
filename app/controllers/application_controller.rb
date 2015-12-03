@@ -6,7 +6,9 @@ class ApplicationController < ActionController::Base
 
   protected
   def require_credentials
-    unless Setting.client_credentials? && Setting.access_token?
+    if  !Setting.client_credentials? &&
+        !Setting.access_token? &&
+        Spreadsheet.count > 0
       redirect_to settings_path, :flash => {:error => 'Client ID, Client Secret and Access Token must be preset once there are existing spreadsheets and scrapes!'}
     end
   end
