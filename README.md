@@ -11,6 +11,8 @@ In order to use this scraper you will need Google Developers OAuth 2.0 API crede
 
 **Firstly** you'll want to head over to [Google's Developer Center](https://developers.google.com/drive/web/auth/web-server) where you can follow the instructions to receive credentials for a Google Developers OAuth 2.0 API project. Start at [your console](https://console.developers.google.com/flows/enableapi?apiid=drive&credential=client_key) and follow the prompts to receive your own OAuth 2.0 client ID and client secret. The name of the application doesn't matter and if you get asked the `Application Type` simply select `Other`.
 
+**Also** you want to make sure that you have the Drive API enabled under [Enabled APIs](https://console.developers.google.com/apis/enabled) for your app in the Google Dev Console.
+
 ----
 
 <p style="color:red;">The below instructions are also available in an in-app walk through on the Setup page.</p>
