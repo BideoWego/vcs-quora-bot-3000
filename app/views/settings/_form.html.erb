@@ -13,18 +13,17 @@ setting_title += setting_title == 'Client' ? ' ID' : ''
     </h3>
   </div>
 
-  <div class="form-group">
+  <% if setting.new_record? %>
+    <div class="form-group">
+        <%= f.text_field(:value, :class => 'form-control') %>
+    </div>
 
-    <%= f.text_field(:value, :class => 'form-control') %>
+    <%= f.hidden_field(:key, :class => 'form-control') %>
+    <%= f.submit("Set #{setting_title}", :class => 'btn btn-primary') %>
 
-  </div>
+  <% else %>
 
-  <%= f.hidden_field(:key, :class => 'form-control') %>
-
-  <%= f.submit("Set #{setting_title}", :class => 'btn btn-primary') %>
-
-  <% if setting.persisted? %>
-
+    <%= setting_title %> is set - 
     <%= link_to("Delete #{setting_title}", setting_path(setting), :method => :delete, :class => 'btn btn-danger', :data => {:confirm => "Are you sure you want to delete the #{setting_title}?"}) %>
 
   <% end %>
