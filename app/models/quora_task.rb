@@ -17,13 +17,23 @@ class QuoraTask
   end
 
   def view_count
-    count = @page.search(css[:view_count]).text
-    count.empty? ? 'No view count' : extract_num(count)
+    # 
+    upvotes_page = page_from_upvotes_link
+    if upvotes_page
+      count = upvotes_page.search(css[:view_count]).text
+      count = extract_num(count)
+    end
+    count.nil? || count.empty? ? 'No view count' : count
   end
 
   def follower_count
-    count = @page.search(css[:follower_count]).text
-    count.empty? ? 'No follower count' : extract_num(count)
+    # 
+    upvotes_page = page_from_upvotes_link
+    if upvotes_page
+      count = upvotes_page.search(css[:follower_count]).text
+      count = extract_num(count)
+    end
+    count.nil? || count.empty? ? 'No follower count' : count
   end
 
   def last_asked_date
@@ -35,10 +45,9 @@ class QuoraTask
     upvotes_page = page_from_upvotes_link
     if upvotes_page
       count = upvotes_page.search(css[:upvote_count]).text
-      extract_num(count)
-    else
-      'Upvote count not be found'
+      count = extract_num(count)
     end
+    count.nil? || count.empty? ? 'Upvote count not be found' : count
   end
 
   def viking_answer_date
@@ -121,17 +130,20 @@ class QuoraTask
   end
 
   def safari_css
+    # follower count:
+    # 'div.QuestionStatsSection .QuestionFollowersStatsRow strong'
+    # QuestionAnswerAuthor a.follow_button
     {
-      :view_count => 'div.QuestionStatsSection .QuestionViewsStatsRow strong',
-      :follower_count => 'div.QuestionStatsSection .QuestionFollowersStatsRow strong',
+      :view_count => '.AnswerStatsSection .AnswerViewsStatsRow strong',
+      :follower_count => '.QuestionAnswerAuthor .ObjectCard-footer .follow_button span',
       :last_asked_date => 'div.QuestionFollowersList .QuestionLastAskedTime'
     }
   end
 
   def chrome_css
     {
-      :view_count => 'div.SignupColumn .ViewsRow',
-      :follower_count => '.FollowersRow',
+      :view_count => '.AnswerStatsSection .AnswerViewsStatsRow strong',
+      :follower_count => '.QuestionAnswerAuthor .ObjectCard-footer .follow_button span',
       :last_asked_date => '.HighlightsSection.SimpleToggle.Toggle.hidden .AskedRow'
     }
   end

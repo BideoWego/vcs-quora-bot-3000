@@ -1,3 +1,6 @@
+# ------------------------------------
+# Output a header in the console
+# ------------------------------------
 def console_header(str)
   width = 20
   delimiter = '-' * width
